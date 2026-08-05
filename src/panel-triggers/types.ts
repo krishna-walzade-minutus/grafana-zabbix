@@ -30,6 +30,7 @@ export interface ProblemsPanelOptions {
   fontSize: string;
   pageSize?: number;
   showSearchFilter?: boolean;
+  showSeverityFilter?: boolean;
   problemTimeline?: boolean;
   highlightBackground?: boolean;
   highlightNewEvents?: boolean;
@@ -83,6 +84,7 @@ export const defaultPanelOptions: Partial<ProblemsPanelOptions> = {
   fontSize: '100%',
   pageSize: 10,
   showSearchFilter: false,
+  showSeverityFilter: false,
   problemTimeline: true,
   highlightBackground: false,
   highlightNewEvents: false,

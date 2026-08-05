@@ -59,6 +59,12 @@ export const plugin = new PanelPlugin<ProblemsPanelOptions, {}>(ProblemsPanel)
         defaultValue: defaultPanelOptions.showSearchFilter,
       })
       .addBooleanSwitch({
+        path: 'showSeverityFilter',
+        name: 'Show severity filter',
+        description: 'Show severity toggle buttons above the problems table to filter rows by severity, without editing the panel.',
+        defaultValue: defaultPanelOptions.showSeverityFilter,
+      })
+      .addBooleanSwitch({
         path: 'problemTimeline',
         name: 'Problem timeline',
         defaultValue: defaultPanelOptions.problemTimeline,

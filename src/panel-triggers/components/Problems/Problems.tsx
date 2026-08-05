@@ -171,6 +171,12 @@ export const ProblemList = (props: ProblemListProps) => {
           const b = parseInt(rowB.original.severity ?? '0', 10);
           return a - b;
         },
+        filterFn: (row, columnId, filterValue: number[]) => {
+          if (!filterValue || filterValue.length === 0) {
+            return true;
+          }
+          return filterValue.includes(row.getValue(columnId));
+        },
         meta: {
           className: 'problem-severity',
         },
@@ -318,6 +324,26 @@ export const ProblemList = (props: ProblemListProps) => {
   const [sorting, setSorting] = useState<SortingState>(() => getSortingFromOption(panelOptions.sortProblems));
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
+  const [selectedSeverities, setSelectedSeverities] = useState<number[]>([]);
+
+  // Clear severity filter when the option is disabled
+  useEffect(() => {
+    if (!panelOptions.showSeverityFilter) {
+      setSelectedSeverities([]);
+    }
+  }, [panelOptions.showSeverityFilter]);
+
+  const toggleSeverityFilter = (priority: number) => {
+    setSelectedSeverities((prev) => {
+      const next = prev.includes(priority) ? prev.filter((p) => p !== priority) : [...prev, priority];
+      setColumnFilters((filters) => {
+        const withoutPriority = filters.filter((f) => f.id !== 'priority');
+        return next.length === 0 ? withoutPriority : [...withoutPriority, { id: 'priority', value: next }];
+      });
+      table.setPageIndex(0);
+      return next;
+    });
+  };
 
   // Follow the "Sort by" panel option when it is changed in the editor
   useEffect(() => {
@@ -500,6 +526,27 @@ export const ProblemList = (props: ProblemListProps) => {
                 table.setPageIndex(0);
               }}
             />
+          </div>
+        )}
+        {panelOptions.showSeverityFilter && (
+          <div className="problems-toolbar problems-severity-filter">
+            {panelOptions.triggerSeverity.map((sev) => {
+              const active = selectedSeverities.includes(sev.priority);
+              return (
+                <button
+                  key={sev.priority}
+                  type="button"
+                  className={cx('severity-filter-btn', { 'severity-filter-btn--active': active })}
+                  style={{
+                    borderColor: sev.color,
+                    backgroundColor: active ? sev.color : 'transparent',
+                  }}
+                  onClick={() => toggleSeverityFilter(sev.priority)}
+                >
+                  {sev.severity}
+                </button>
+              );
+            })}
           </div>
         )}
         <table className="react-table-v8">
