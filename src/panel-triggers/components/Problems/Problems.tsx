@@ -175,7 +175,7 @@ export const ProblemList = (props: ProblemListProps) => {
           if (!filterValue || filterValue.length === 0) {
             return true;
           }
-          return filterValue.includes(row.getValue(columnId));
+          return filterValue.includes(Number(row.getValue(columnId)));
         },
         meta: {
           className: 'problem-severity',
